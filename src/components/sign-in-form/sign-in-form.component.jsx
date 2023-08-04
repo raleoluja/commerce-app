@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
 import FormInput from '../form-input/form-input.component';
 
@@ -8,6 +8,8 @@ import {
   signInWithGooglePopup,
 } from '../../utils/firebase/farebase.utils';
 import Button from '../button/button.component';
+
+import { UserContext } from '../../contexts/user.context';
 
 import './sign-in-form.styles.scss';
 
@@ -19,6 +21,8 @@ const defoultFormFields = {
 const SignInForm = () => {
   const [formFields, setFormFileds] = useState(defoultFormFields);
   const { email, password } = formFields;
+
+  const { setCurrentUser } = useContext(UserContext);
 
   const signInWithGoogle = async () => {
     const { user } = await signInWithGooglePopup();
@@ -33,12 +37,12 @@ const SignInForm = () => {
     event.preventDefault();
 
     try {
-      const response = await signInAuthUserWithEmailAndPassword(
+      const { user } = await signInAuthUserWithEmailAndPassword(
         email,
         password
       );
+      //   setCurrentUser(user);
 
-      console.log('RESP ', response);
       resetFormField();
     } catch (error) {
       switch (error.code) {
@@ -74,7 +78,7 @@ const SignInForm = () => {
           required
           onChange={handleChange}
           name="email"
-          vale={email}
+          value={email}
         />
 
         <FormInput
